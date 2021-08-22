@@ -1,0 +1,7 @@
+scp -i .pem from to
+
+mongodump
+mongorestore --db dbspotcred C:\Users\rpic\last_dbspotcred\dbspotcred
+
+
+
