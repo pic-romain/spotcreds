@@ -13,7 +13,6 @@ import datetime
 #%%
 # Connecting to the db
 db_name = "dbspotcred"
-mongodb_creds = json.load(open('conf_mongodb.json', 'r'))
 # Set client
 client = pymongo.MongoClient(
     host='localhost:27017'
@@ -36,12 +35,7 @@ songs_unavailable = list(db.songs.find({"spotify_uri":{'$exists':False}}))
 i=1
 n=len(songs_unavailable)
 for s in songs_unavailable:
-    # print(s["last_update"],type(s["last_update"]))
-    # duration = (datetime.datetime.now()-s["last_update"]).total_seconds()
-    # printProgressBar(i, n, prefix = 'Progress:', suffix = 'Complete', length = 50)
     print(f"{i}/{n}")
-    # print("\n",s["_id"],s["song_name"],"-", s["primary_artist_name"], f'last update : {duration}')
-
     spotify_song=search_track(track_name=s["song_name"],auth_header=spotify_api.AUTH_HEADER,artist_name=s["primary_artist_name"])
     if spotify_song!={}:
         temp = db.songs.update_one(
@@ -153,7 +147,6 @@ for p in all_playlists:
         query = {"tracks":tracks_to_delete["tracks"][k*100:min((k+1)*100,len(tracks_to_delete["tracks"]))]}
         data = json.dumps(query, indent=4)
         r_delete = requests.delete(url_delete,headers=auth_delete,data=data)
-        # print(r_delete.status_code)
         if r_delete.status_code not in (200,299):
             print(f"Issue removing the tracks ({r_delete.status_code}) for {artist_name}")
 
@@ -184,10 +177,7 @@ for p in all_playlists:
             }
         )
     print(f"Finished updating the playlist for {artist_name} - {i}/{len(all_playlists)}")
-    # print(p["playlist_url"])
     i+=1
-    
 
-#%%
  
 # %%

@@ -100,7 +100,7 @@ def create_playlist_image(artist_name):
     pil_im = Image.fromarray(cv2_im_rgb)  
 
     draw = ImageDraw.Draw(pil_im)  
-    # use a truetype font  
+    # use a truetype font
     font = ImageFont.truetype("data/zilla-slab.regular.ttf", 90)
     font_sb = ImageFont.truetype("data/zilla-slab.semibold.ttf", 80)
 
@@ -144,9 +144,8 @@ def create_playlist_image(artist_name):
     draw.rectangle([(left_margin-bm,top_margin+2*lw-vertical_spacing),(left_margin+l3_width+bm,top_margin+2*lw+lw_sb-2*vertical_spacing+2*bm)],fill=yellow) 
     draw.text((left_margin,top_margin+2*(lw-vertical_spacing)+bm+descent_sb/2), artist_name, font=font_sb,fill=bg_blue)
 
-
     cv2_im = cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGB2BGR)
-    # Get back the image to OpenCV  
+    # Get the image back to OpenCV  
     img_str = cv2.imencode('.jpg',cv2_im)[1].tostring()
     return img_str
 
@@ -165,7 +164,7 @@ class SpotifyAPI(object):
     ACCOUNT_ID = None
     ACCOUNT_PASSWORD = None
 
-    REDIRECT_URI = "https://twitter.com/SpotCredits"#f"{CLIENT_SIDE_URL}:{PORT}/callback/"
+    REDIRECT_URI = "https://twitter.com/SpotCredits"
     SCOPE = "ugc-image-upload playlist-modify-public playlist-modify-private"
 
     CLIENT = json.load(open('conf_spotify.json', 'r'))
@@ -182,7 +181,6 @@ class SpotifyAPI(object):
         }
         self.URL_ARGS = "&".join([f"{key}={urllibparse.quote(val)}" for key, val in self.auth_query_parameters.items()])
         self.AUTH_URL = f"{SPOTIFY_AUTH_URL}/?{self.URL_ARGS}"
-        # print(self.AUTH_URL)
 
         spotify_account = json.load(open('conf_spotify_account.json', 'r'))
         self.ACCOUNT_ID = spotify_account["id"]
@@ -193,27 +191,12 @@ class SpotifyAPI(object):
         self.update_token()
 
 
-        
-    
-
     def get_code(self):
-        #Selenium Chrome
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.binary_location = '/opt/headless-chromium'
-        # chrome_options.add_argument('--headless')
-        # chrome_options.add_argument('--no-sandbox')
-        # chrome_options.add_argument("--incognito")
-        # chrome_options.add_argument('--start-maximized')
-        # chrome_options.add_argument('--start-fullscreen')
-        # chrome_options.add_argument('--single-process')
-        # chrome_options.add_argument('--disable-dev-shm-usage')
-        # driver = webdriver.Chrome(chrome_options=chrome_options)
-        
-        # # Selenium Firefox
+
+        # Selenium Firefox
         opts = webdriver.FirefoxOptions()
         opts.add_argument("--headless")
         driver = webdriver.Firefox(firefox_options=opts)
-        # driver = webdriver.Firefox()
         
         # driver.get("https://accounts.spotify.com/404")
         # load_cookie(driver=driver,path="data/cookies.txt")
@@ -272,12 +255,6 @@ class SpotifyAPI(object):
                 "grant_type": "refresh_token",
                 "refresh_token": self.refresh_token
             }
-        # token_data = {
-        #     "grant_type": "refresh_token",
-        #     "refresh_token":self.code
-        #     # "code": self.code,
-        #     # "redirect_uri": self.REDIRECT_URI
-        # }
         post_request = requests.post(SPOTIFY_TOKEN_URL, data=token_data,headers=token_headers)
         if post_request.status_code not in range(200, 299):
             raise Exception("Connection refused "+str(post_request.status_code))
@@ -294,7 +271,6 @@ class SpotifyAPI(object):
         self.access_token_did_expire = False
         now = datetime.datetime.utcnow()
         expires_in = response_data["expires_in"]
-        # print(expires_in)
         self.access_token_expires_at = now + datetime.timedelta(seconds=expires_in)
 
     def get_user_information(self):
@@ -304,7 +280,6 @@ class SpotifyAPI(object):
     
     def create_artist_playlist(self, artist_genius_id, artist_name,db):
         user_info = self.get_user_information()
-        # print(user_info)
         user_id = user_info["id"]
         # Create the empty playlist
         url1 = f"{SPOTIFY_API_URL}/users/{user_id}/playlists"
@@ -325,7 +300,7 @@ class SpotifyAPI(object):
         
         url2 = f"{SPOTIFY_API_URL}/playlists/{playlist_id}/images"
         
-        # Free image
+        # Playlist image
         img_str = create_playlist_image(artist_name=artist_name)
         data2 = base64.b64encode(img_str)
 
@@ -364,7 +339,6 @@ class SpotifyAPI(object):
                             song.save(db["songs"])
                     else :
                         discarded_tracks.append((s["title"],s["primary_artist"]["name"]))
-                        # print(s["title"],s["primary_artist"]["name"])
                         song = Songs(genius_id = s["id"], spotify_id = None,spotify_uri = None, apple_music_id = None, song_name = s["title"],
                         primary_artist_name = s["primary_artist"]["name"], genius_song = s, spotify_popularity=None, last_update = datetime.datetime.utcnow())
                         song.save(db["songs"])
