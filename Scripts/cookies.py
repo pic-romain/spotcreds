@@ -52,7 +52,9 @@ def load_cookie(driver, path):
          for cookie in cookies:
              driver.add_cookie(cookie)
 
-driver = webdriver.Firefox()
+opts = webdriver.FirefoxOptions()
+opts.add_argument("--headless")
+driver = webdriver.Firefox(firefox_options=opts)
 driver.get(AUTH_URL)
 
 
