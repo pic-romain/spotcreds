@@ -9,7 +9,6 @@ import pymongo
 from custom_collections import UnknownArtists, Songs, ArtistPlaylist
 
 import datetime
-# import boto3
 
 #%%
 # Connecting to the db

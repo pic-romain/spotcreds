@@ -17,9 +17,9 @@ import re
 
 
 if __name__ == "__main__":
-
-    artists_toadd = ["Scar Productions", "La Miellerie"]
-
+    
+    artist_input = input("Artist to add :")
+    artists_toadd = [artist_input]
     # Connecting to the db
     db_name = "dbspotcred"
     # Set client
