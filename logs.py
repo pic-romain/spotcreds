@@ -19,7 +19,7 @@ class ERROR_EMAIL(object):
 
         self.FROM     = gmail_account["email"]
         self.TO       = [gmail_account["send_to"]]
-        self.PW
+        self.PW       = gmail_account["password"]
         
     def send(self,subject,content):
         server = smtplib.SMTP_SSL("smtp.gmail.com",465,context=None)
