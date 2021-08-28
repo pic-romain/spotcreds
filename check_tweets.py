@@ -13,7 +13,7 @@ import logging, datetime
 from logs import mkdir_p, ERROR_EMAIL
 import os
 
-log_filename = f"logs/weekly_update/{datetime.date.today()}.log"
+log_filename = f"logs/check_tweets/{datetime.date.today()}.log"
 mkdir_p(os.path.dirname(log_filename))
 
 logger = logging.getLogger(__name__)
