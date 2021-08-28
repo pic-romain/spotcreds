@@ -1,5 +1,16 @@
 # Configuration files
 *.json
 
+#Remove tests
 /Tests/*
+
+#Remove credentials
 /Credentials/*
+
+
+/__pycache__/*
+*.pyc
+
+.gitignore
+
+/data/cookies.txt

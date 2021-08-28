@@ -198,22 +198,22 @@ class SpotifyAPI(object):
         opts.add_argument("--headless")
         driver = webdriver.Firefox(firefox_options=opts)
         
-        # driver.get("https://accounts.spotify.com/404")
-        # load_cookie(driver=driver,path="data/cookies.txt")
+        driver.get("https://accounts.spotify.com/404")
+        load_cookie(driver=driver,path="data/cookies.txt")
         
         driver.get(self.AUTH_URL)
-        try:
-            driver.find_element_by_id("login-username").send_keys(self.ACCOUNT_ID)
-            driver.find_element_by_id ("login-password").send_keys(self.ACCOUNT_PASSWORD)
-            driver.find_element_by_id("login-button").click()
-        except NoSuchElementException:
-            print(driver.page_source)
-        try:
-            auth_button= WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'auth-accept')))
-            print("Page is ready!")
-            auth_button.click()
-        except TimeoutException:
-            print("Loading took too much time!")
+        # try:
+        #     driver.find_element_by_id("login-username").send_keys(self.ACCOUNT_ID)
+        #     driver.find_element_by_id ("login-password").send_keys(self.ACCOUNT_PASSWORD)
+        #     driver.find_element_by_id("login-button").click()
+        # except NoSuchElementException:
+        #     print(driver.page_source)
+        # try:
+        #     auth_button= WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'auth-accept')))
+        #     print("Page is ready!")
+        #     auth_button.click()
+        # except TimeoutException:
+        #     print("Loading took too much time!")
         
         url_code = driver.current_url
         parsed_url = urlparse.urlparse(url_code)
