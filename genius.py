@@ -1,10 +1,10 @@
-from __future__ import print_function
-import base64
 import json
 import requests
-import sys
 import spotify
 from urllib.parse import urlencode
+
+from logs import  ERROR_EMAIL
+import datetime
 
 
 # Workaround to support both python 2 & 3
@@ -18,8 +18,10 @@ except ImportError:
     --------------------- HOW THIS FILE IS ORGANIZED --------------------
 
     0. GENIUS BASE URL
-    1. USER AUTHORIZATION
-
+    1. GET CLIENT IDs
+    2. GET BASE OBJECTS
+    3. GET MORE COMPLEX OBJECTS
+    4. SEARCH GENIUS DATABASE
 
 '''
 
@@ -41,24 +43,25 @@ auth_headers = {
 
 # ---------------------------- 2. GET BASE OBJECTS --------------------------- #
 
-def get_artist(id):
+def get_artist(id,logger=None):
     endpoint = f'{GENIUS_API_URL}/artists/{id}'
     r=requests.get(endpoint, headers=auth_headers)
     if r.status_code not in range(200,299):
+        logger.warning(f"Could not get artist from Genius : {r.status_code}\n {endpoint}")
         return({})
     return r.json()
 
-def get_song(id):
+def get_song(id,logger=None):
     endpoint = f'{GENIUS_API_URL}/songs/{id}'
     r=requests.get(endpoint, headers=auth_headers)
     if r.status_code not in range(200,299):
+        logger.warning(f"Could not get song from Genius : {r.status_code}\n {endpoint}")
         return({})
-    return r.json()
-
+    return r.json()  
 
 # ------------------------ 3. GET MORE COMPLEX OBJECTS ----------------------- #
 
-def get_artist_songs(id,page=1,per_page=20, details = 'all'):
+def get_artist_songs(id,page=1,per_page=20, details = 'all',logger=None):
     endpoint = f'{GENIUS_API_URL}/artists/{id}/songs?'+urlencode({"page":page,'per_page':per_page,'sort':'popularity'})
     r=requests.get(endpoint, headers=auth_headers)
     if r.status_code not in range(200,299):
@@ -72,22 +75,19 @@ def get_artist_songs(id,page=1,per_page=20, details = 'all'):
         return r.json()["response"]
 
 
+
 # ------------------------- 4. SEARCH GENIUS DATABASE ------------------------ #
-def get_song(id):
-    endpoint = f'{GENIUS_API_URL}/songs/{id}'
-    r=requests.get(endpoint, headers=auth_headers)
-    if r.status_code not in range(200,299):
-        return({})
-    return r.json()   
+ 
     
-def search_track(query, per_page=5):
+def search_track(query, per_page=5,logger=None):
     endpoint = f'{GENIUS_API_URL}/search?'+urlencode({'q':query,"per_page":per_page})
     r=requests.get(endpoint, headers=auth_headers)
     if r.status_code not in range(200,299):
+        logger.warning(f"Could not search track from Genius : {r.status_code}\n {endpoint}")
         return({})
     return r.json()
 
-def unique_artists(list_artists):
+def unique_artists(list_artists,logger=None):
     r = []
     r_id = []
     for a in list_artists:
@@ -100,12 +100,13 @@ def unique_artists(list_artists):
                 r[i]["found_as"].append(a["found_as"][0])
     return r
 
-def search_artist(query,per_page = 5, page=1):
+def search_artist(query,per_page = 5, page=1,logger=None):
     endpoint = f'https://api.genius.com/search?'+urlencode({'q':query})#,"per_page":per_page,"page":page
     r=requests.get(endpoint, headers=auth_headers)
     results = []
 
     if r.status_code not in range(200,299):
+        logger.warning(f"Could not search artist from Genius : {r.status_code}\n {endpoint}")
         return([])
     
     # If we find the artist as a primary artist
@@ -131,7 +132,7 @@ def search_artist(query,per_page = 5, page=1):
     return(unique_artists(results))
 
 
-def get_song_artists(spotify_id,auth_header):
+def get_song_artists(spotify_id,auth_header,logger=None):
     spotify_parameters = spotify.get_song_parameters(spotify_id,auth_header)
     query=spotify_parameters["primary_artist"]+" "+spotify_parameters["title"]
     r0 = search_track(query)["response"]['hits']

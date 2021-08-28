@@ -1,5 +1,6 @@
 from __future__ import print_function
 import base64, json, requests
+from logging import ERROR
 
 from PIL import ImageFont, ImageDraw, Image  
 # from cv2 import imread, cvtColor,COLOR_RGB2BGR, imencode
@@ -32,6 +33,10 @@ try:
     import urllib.parse as urllibparse
 except ImportError:
     import urllib as urllibparse
+
+
+from logs import ERROR_EMAIL
+error_email = ERROR_EMAIL()
 '''
     --------------------- HOW THIS FILE IS ORGANIZED --------------------
 
@@ -45,11 +50,6 @@ except ImportError:
     # 7. TRACKS
 
 '''
-def save_cookie(driver, path):
-    with open(path, 'wb') as filehandler:
-        print(driver.get_cookies())
-        pickle.dump(driver.get_cookies(), filehandler)
-
 def load_cookie(driver, path):
     with open(path, 'rb') as cookiesfile:
         cookies = pickle.load(cookiesfile)
@@ -169,8 +169,10 @@ class SpotifyAPI(object):
 
     CLIENT = json.load(open('conf_spotify.json', 'r'))
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, logger, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.logger = logger
         self.CLIENT_ID = CLIENT['id']
         self.CLIENT_SECRET = CLIENT['secret']
         self.auth_query_parameters = {
@@ -196,7 +198,7 @@ class SpotifyAPI(object):
         # Selenium Firefox
         opts = webdriver.FirefoxOptions()
         opts.add_argument("--headless")
-        driver = webdriver.Firefox(firefox_options=opts)
+        driver = webdriver.Firefox(options=opts)
         
         driver.get("https://accounts.spotify.com/404")
         load_cookie(driver=driver,path="data/cookies.txt")
@@ -220,8 +222,7 @@ class SpotifyAPI(object):
         try:
             self.code = parse_qs(parsed_url.query)["code"][0]
         except KeyError :
-            print("No code found.")
-            print(driver.page_source)
+            self.logger.exception("No code found.")
             self.code = None
 
         driver.close()
@@ -257,6 +258,10 @@ class SpotifyAPI(object):
             }
         post_request = requests.post(SPOTIFY_TOKEN_URL, data=token_data,headers=token_headers)
         if post_request.status_code not in range(200, 299):
+            self.logger.exception("Connection refused "+str(post_request.status_code))
+            error_email.send(
+                subject="Unable to post token",
+                content="Connection refused "+str(post_request.status_code)+f"\n Date and Time : {datetime.datetime.now()}")
             raise Exception("Connection refused "+str(post_request.status_code))
             
         
@@ -291,6 +296,10 @@ class SpotifyAPI(object):
         data1 = json.dumps(query1, indent=4)
         r1 = requests.post(url1,data=data1,headers=self.AUTH_HEADER)
         if r1.status_code not in range(200, 299):
+            self.logger.exception("Connection refused "+str(r1.status_code))
+            error_email.send(
+                subject="Unable to create playlist",
+                content="Connection refused "+str(r1.status_code)+f"\n Artist : {artist_name} \n Date and Time : {datetime.datetime.now()}")
             return False
         playlist_url = r1.json()["external_urls"]["spotify"]
 
@@ -306,6 +315,10 @@ class SpotifyAPI(object):
 
         r2 = requests.put(url2,headers=auth_image,data=data2)
         if r2.status_code not in range(200, 299):
+            self.logger.exception("Unable to add image to playlist")
+            error_email.send(
+                subject="Unable to add image to playlist",
+                content="Connection refused "+str(r2.status_code)+f"\n Artist : {artist_name} \n Date and Time : {datetime.datetime.now()}")
             return False
         
 
@@ -316,7 +329,7 @@ class SpotifyAPI(object):
         discarded_tracks = []
         full_tracklist = []
         while next_page!=None:
-            songs = genius.get_artist_songs(id=artist_genius_id,page=next_page,per_page=50,details="minimal")
+            songs = genius.get_artist_songs(id=artist_genius_id,page=next_page,per_page=50,details="minimal",logger=self.logger)
             if songs == {}:
                 return False
             full_tracklist+=songs["songs"]
@@ -387,6 +400,8 @@ class SpotifyAPI(object):
             last_update = datetime.datetime.utcnow()
             )
         playlist.save(db["artist_playlist"])
+
+        self.logger.info(f"Created and saved playlist for : {artist_name} at {playlist_url} ")
         return playlist_url
 
 
@@ -438,7 +453,6 @@ def search_track(track_name,auth_header,artist_name=""):
     
     if "’" in artist_name:
         artist_name = artist_name.replace("’","'")
-        # print(artist_name)
     
 
     query = {"track":track_name,"artist":artist_name}

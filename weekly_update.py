@@ -8,7 +8,21 @@ import re, requests
 import pymongo
 from custom_collections import UnknownArtists, Songs, ArtistPlaylist
 
-import datetime
+import logging, datetime
+from logs import mkdir_p, ERROR_EMAIL
+import os
+
+log_filename = f"logs/weekly_update/{datetime.date.today()}.log"
+mkdir_p(os.path.dirname(log_filename))
+
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+file_handler = logging.FileHandler(filename=log_filename)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+error_email = ERROR_EMAIL()
 
 #%%
 # Connecting to the db
@@ -21,9 +35,10 @@ db = client.dbspotcred
 #%%
 # Get the APIs keys 
 spotify_account = json.load(open('conf_spotify_account.json', 'r'))
-spotify_api = SpotifyAPI()
+spotify_api = SpotifyAPI(logger=logger)
 spotify_api.update_token()
 
+logger.info("Succesfully logged in the DB and to the Spotify account.")
 # ---------------------------------------------------------------------------- #
 #                               Refresh all songs                              #
 # ---------------------------------------------------------------------------- #
@@ -32,10 +47,7 @@ spotify_api.update_token()
 #%%
 songs_unavailable = list(db.songs.find({"spotify_uri":{'$exists':False}}))
 
-i=1
-n=len(songs_unavailable)
 for s in songs_unavailable:
-    print(f"{i}/{n}")
     spotify_song=search_track(track_name=s["song_name"],auth_header=spotify_api.AUTH_HEADER,artist_name=s["primary_artist_name"])
     if spotify_song!={}:
         temp = db.songs.update_one(
@@ -58,20 +70,14 @@ for s in songs_unavailable:
                 }
             }
         )
-    i+=1
-print("Checked all the songs that were not present or found on Spotify.")
+logger.info("Checked all the songs that were not present or found on Spotify.")
 
 #%%
 spotify_api.update_token()
 # -------------------- Refresh the popularity of all songs ------------------- #
 songs_spotify = list(db.songs.find({"spotify_uri":{'$exists':True}}))
-n = len(songs_spotify)
-i=1
 for s in songs_spotify:
-    print(f"{i}/{n}")
-    # spotify_api.update_token()
     update_spotify = get_song_parameters(id=s["spotify_id"],auth_header=spotify_api.AUTH_HEADER)
-    # print(update_spotify)
     if update_spotify!={}:
         temp = db.songs.update_one(
                 filter={"_id":s["_id"]},
@@ -82,8 +88,7 @@ for s in songs_spotify:
                     }
                 }
             )
-    i+=1
-
+logger.info("Finished updating all the popularities")
 
 # --------------------------- Refresh all playlists -------------------------- #
 #%%
@@ -100,7 +105,7 @@ for p in all_playlists:
     discarded_tracks = []
     full_tracklist = []
     while next_page!=None:
-        songs = genius.get_artist_songs(id=p["artist_genius_id"],page=next_page,per_page=50,details="minimal")
+        songs = genius.get_artist_songs(id=p["artist_genius_id"],page=next_page,per_page=50,details="minimal",logger=logger)
         if songs == {}:
             pass
         full_tracklist+=songs["songs"]
@@ -163,8 +168,11 @@ for p in all_playlists:
         data3 = json.dumps(query3, indent=4)
         r3 = requests.post(url3,headers=auth_items,data=data3)
         if r3.status_code not in range(200, 299):
-            print("Could not add items to the playlist")
-    
+            logger.exception("Could not add items to the playlist")
+            error_email.send(
+                subject="Error occured when adding items to a playlist",
+                content=f"Could not add items to the playlist during weekly update. \n Artist :{artist_name} \n Date and Time : {datetime.datetime.now()}")
+            continue
     # Modify the playlist in the MongoDB collection
     temp = db.artist_playlist.update_one(
             filter={"_id":p["_id"]},
@@ -176,7 +184,7 @@ for p in all_playlists:
                 }
             }
         )
-    print(f"Finished updating the playlist for {artist_name} - {i}/{len(all_playlists)}")
+    logger.info(f"Finished updating the playlist for {artist_name} - {i}/{len(all_playlists)}")
     i+=1
 
  
