@@ -1,9 +1,6 @@
-from __future__ import print_function
 import base64, json, requests
-from logging import ERROR
 
 from PIL import ImageFont, ImageDraw, Image  
-# from cv2 import imread, cvtColor,COLOR_RGB2BGR, imencode
 import cv2
 import numpy as np  
 
@@ -40,14 +37,12 @@ error_email = ERROR_EMAIL()
 '''
     --------------------- HOW THIS FILE IS ORGANIZED --------------------
 
-    0. SPOTIFY BASE URL
-    1. USER AUTHORIZATION
-    # 2. ARTISTS
-    # 3. SEARCH
-    # 4. USER RELATED REQUETS (NEEDS OAUTH)
-    # 5. ALBUMS
-    # 6. USERS
-    # 7. TRACKS
+    0. SPOTIFY BASE URLs
+    1. CREATING THE IMAGE FOR PLAYLIST
+    2. SPOTIFY API CLASS
+    3. GET USER INFO
+    4. FUNCTIONS TO GET DATA FROM SPOTIFY
+    
 
 '''
 def load_cookie(driver, path):
@@ -57,7 +52,7 @@ def load_cookie(driver, path):
             driver.add_cookie(cookie)
 
 def unique(liste):
-    # intilize a null list
+    # initialize a null list
     unique_list = []
     # traverse for all elements
     for x in liste:
@@ -65,22 +60,21 @@ def unique(liste):
         if x not in unique_list:
             unique_list.append(x)
     return unique_list
-# ----------------- 0. SPOTIFY BASE URL ----------------
+# ----------------- 0. SPOTIFY BASE URLs ----------------
 
 SPOTIFY_API_BASE_URL = 'https://api.spotify.com'
 API_VERSION = "v1"
 SPOTIFY_API_URL = f"{SPOTIFY_API_BASE_URL}/{API_VERSION}"
-
-# ----------------- 1. USER AUTHORIZATION ----------------
 
 # spotify endpoints
 SPOTIFY_AUTH_BASE_URL = "https://accounts.spotify.com/{}"
 SPOTIFY_AUTH_URL = SPOTIFY_AUTH_BASE_URL.format('authorize')
 SPOTIFY_TOKEN_URL = SPOTIFY_AUTH_BASE_URL.format('api/token')
 
+# -------------------- 1. CREATING THE IMAGE FOR PLAYLIST -------------------- #
+
 # client keys
 CLIENT = json.load(open('conf_spotify.json', 'r'))
-
 
 def create_playlist_image(artist_name):
     # Colors
@@ -148,6 +142,8 @@ def create_playlist_image(artist_name):
     # Get the image back to OpenCV  
     img_str = cv2.imencode('.jpg',cv2_im)[1].tostring()
     return img_str
+
+# --------------------------- 2. SPOTIFY API CLASS --------------------------- #
 
 class SpotifyAPI(object):
     refresh_token = None
@@ -408,7 +404,7 @@ class SpotifyAPI(object):
 
 
 
-# ----------------- 2. USER INFORMATION ----------------
+# ----------------------------- 3. GET USER INFO ----------------------------- #
 
 
 def get_users_playlists(auth_header):
@@ -416,7 +412,7 @@ def get_users_playlists(auth_header):
     r = requests.get(url, headers=auth_header)
     return r.json()
 
-# ----------------- 2. PLAYLIST ----------------
+# ------------------- 4. FUNCTIONS TO GET DATA FROM SPOTIFY ------------------ #
 def get_playlist(_id, auth_header,limit=20,page=1):
     url = f"{SPOTIFY_API_URL}/playlists/{_id}"
     spotify_playlist = requests.get(url+'?'+urlencode({"fields":",".join(["description",'id',"images","name","owner"])}),headers=auth_header).json()

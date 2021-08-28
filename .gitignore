@@ -14,3 +14,5 @@
 .gitignore
 
 /data/cookies.txt
+
+/Scripts/clear_db.py
