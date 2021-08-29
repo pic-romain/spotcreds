@@ -14,7 +14,7 @@ Finally, on my server side, I use Python scripts to handle all of this and a Mon
 
 * **When to use it ?** You can use it if you want to get a playlist that as not been made or if you're not sure if a playlist has been made.
 * **How to use it ?** To use it you have to tweet at my bot (using **@SpotCredits**) and use the following synthax :  
-![alt text](https://github.com/rpic84/spotcreds/images/synthax.png "synthax.png")
+![alt text](https://github.com/rpic84/spotcreds/blob/main/images/synthax.png "synthax.png")
 
 For example, if you want to check if there is a playlist for the Belgian artist, [**Le Motif**](https://genius.com/artists/Le-motif), you can tweet one of the following :
 * in English : "@SpotCredits Do you have a playlist with Le Motif please?"
