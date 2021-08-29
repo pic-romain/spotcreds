@@ -1,8 +1,0 @@
-scp -i .pem from to
-
-mongodump --db dbspotcred --out dbspotcred_24082021.db
-mongorestore --db dbspotcred C:\Users\rpic\last_dbspotcred\dbspotcred
-
-
-
-mv -v Credentials/*.* spotcreds
