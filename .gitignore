@@ -7,7 +7,7 @@
 #Remove credentials
 /Credentials/*
 
-
+/images/banner.png
 /__pycache__/*
 *.pyc
 
