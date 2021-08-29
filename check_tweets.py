@@ -47,7 +47,7 @@ if __name__ == "__main__":
     tweets = tweets[::-1]
     for t in tweets:
 
-        m = re.search(r"playlist\s\S*\s(.*)\sstp",t.full_text)
+        m = re.search(r"playlist\s\S*\s(.*)\s(stp|please|pls)",t.full_text)
         if bool(m) and t.user.screen_name!="SpotCredits":
             logger.info("Treating the tweet : ")
             related_tweets = []
