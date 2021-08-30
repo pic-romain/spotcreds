@@ -22,14 +22,19 @@ For example, if you want to check if there is a playlist for the Belgian artist,
 
 ## Presentation of the code
 
-* *genius.py* : 
-* *spotify.py* : 
-* *twitter.py* : 
-* *logs.py* :
-* *custom_collections.py* : 
+* *genius.py* : functions related to the Genius API. There are basic functions such as ones to search the Genius database or one to *get* items through the Genius API. There are also more complex ones parsing data at the *.json* format to get all the artists behind a song and their contribution.
 
-* *check_tweets.py* : 
-* *weekly_update.py* :
+* *spotify.py* : similarly, to what has been done for the Genius API in **genius.py**, this file is composed of a lot of functions to make requests to the Spotify API database. Moreover, there is a function that makes an image for which I have the rights for any playlist using [Pillow](https://pillow.readthedocs.io/en/stable/) and [opencv](https://docs.opencv.org/4.5.2/d6/d00/tutorial_py_root.html). The main element of this file is a class used to login to the Spotify account handling all the playlist and the access to the Spotify API, this was the most complex piece of code that I made for this project.
+
+* *twitter.py* : functions to encapsulate code used to work with the Twitter API.
+
+* *logs.py* : a function to create a new folder for logs if needed and a class to send an e-mail if an error occurs.
+
+* *custom_collections.py* : classes to ensure the cojherence of the structure inside the *songs* and *artist_playlist* collections of the MongoDB database.
+
+* *check_tweets.py* : the function that check if there are tweet requests and that create a playlist or links to an existing playlist depending on the request result.
+
+* *weekly_update.py* : updating the database and the playlists. This update starts by looking for the songs that were not found on Spotify.After that it updates the popularity of each song in the database. The popularity is a score given through the Spotify API and it is used to sort the songs in each playlist by decreasing popularity. Then, this script updates the songs related to each artist already in the database by looking for new songs. Finally, the splaylists are updated on Spotify.
 
 
 ## Contributing
@@ -42,4 +47,5 @@ You can contribute to the project via GitHub directly if you want to code or con
 * Genius API : [official documentation](https://docs.genius.com/)
 * Twitter API : [Code Wizard](https://www.youtube.com/watch?v=ewq-91-e2fw)
 * Set up MongoDB on Linux server : [Code With Nate](https://www.youtube.com/watch?v=Ir68GVsNWB4)
+* Logs : [Corey Schafer](https://www.youtube.com/watch?v=jxmzY9soFXg)
 * For all the issues I encountered : [Stack Overflow](https://stackoverflow.com/)
