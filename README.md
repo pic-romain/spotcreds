@@ -22,19 +22,21 @@ For example, if you want to check if there is a playlist for the Belgian artist,
 
 ## Presentation of the code
 
-* *genius.py* : functions related to the Genius API. There are basic functions such as ones to search the Genius database or one to *get* items through the Genius API. There are also more complex ones parsing data at the *.json* format to get all the artists behind a song and their contribution.
+* *[genius.py](genius.py)* : functions related to the Genius API. There are basic functions such as ones to search the Genius database or one to *get* items through the Genius API. There are also more complex ones parsing data at the *.json* format to get all the artists behind a song and their contribution.
 
-* *spotify.py* : similarly, to what has been done for the Genius API in **genius.py**, this file is composed of a lot of functions to make requests to the Spotify API database. Moreover, there is a function that makes an image for which I have the rights for any playlist using [Pillow](https://pillow.readthedocs.io/en/stable/) and [opencv](https://docs.opencv.org/4.5.2/d6/d00/tutorial_py_root.html). The main element of this file is a class used to login to the Spotify account handling all the playlist and the access to the Spotify API, this was the most complex piece of code that I made for this project.
+* *[spotify.py](spotify.py)* : similarly, to what has been done for the Genius API in **genius.py**, this file is composed of a lot of functions to make requests to the Spotify API database. Moreover, there is a function that makes an image for which I have the rights for any playlist using [Pillow](https://pillow.readthedocs.io/en/stable/) and [opencv](https://docs.opencv.org/4.5.2/d6/d00/tutorial_py_root.html). The main element of this file is a class used to login to the Spotify account handling all the playlist and the access to the Spotify API, this was the most complex piece of code that I made for this project.
 
-* *twitter.py* : functions to encapsulate code used to work with the Twitter API.
+* *[twitter.py](twitter.py)* : functions to encapsulate code used to work with the Twitter API.
 
-* *logs.py* : a function to create a new folder for logs if needed and a class to send an e-mail if an error occurs.
+* *[logs.py](log.py)* : a function to create a new folder for logs if needed and a class to send an e-mail if an error occurs.
 
-* *custom_collections.py* : classes to ensure the cojherence of the structure inside the *songs* and *artist_playlist* collections of the MongoDB database.
+* *[custom_collections.py](custom_collections.py)* : classes to ensure the cojherence of the structure inside the *songs* and *artist_playlist* collections of the MongoDB database.
 
-* *check_tweets.py* : the function that check if there are tweet requests and that create a playlist or links to an existing playlist depending on the request result.
+* *[check_tweets.py](check_tweets.py)* : the function that check if there are tweet requests and that create a playlist or links to an existing playlist depending on the request result.
 
-* *weekly_update.py* : updating the database and the playlists. This update starts by looking for the songs that were not found on Spotify.After that it updates the popularity of each song in the database. The popularity is a score given through the Spotify API and it is used to sort the songs in each playlist by decreasing popularity. Then, this script updates the songs related to each artist already in the database by looking for new songs. Finally, the splaylists are updated on Spotify.
+* *[weekly_update.py](weekly_update.py)* : updating the database and the playlists. This update starts by looking for the songs that were not found on Spotify.After that it updates the popularity of each song in the database. The popularity is a score given through the Spotify API and it is used to sort the songs in each playlist by decreasing popularity. Then, this script updates the songs related to each artist already in the database by looking for new songs. Finally, the splaylists are updated on Spotify.  
+
+The project uses a few configuration files that include access keys to the APIs and credentials for the other accounts used.
 
 
 ## Contributing
