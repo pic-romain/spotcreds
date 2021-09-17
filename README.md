@@ -43,6 +43,10 @@ The project uses a few configuration files that include access keys to the APIs 
 
 You can contribute to the project via GitHub directly if you want to code or contact me on Twitter [@SpotCredits](https://twitter.com/SpotCredits).
 
+## Nota Bene
+
+Spotify seems to be trying to develop more ressources for the artists behind songs. They started to able **songwriters** to create webpages for their work and to help producers and publishers through some kind of hub. Click [here](https://noteable.spotify.com/) for more information.
+
 ## Sources
 
 * Spotify API : [CodingEntrepreneurs](https://www.youtube.com/watch?v=xdq6Gz33khQ) and [documentation](https://developer.spotify.com/documentation/web-api/reference/)
