@@ -7,6 +7,7 @@ class ArtistPlaylist:
             "user_id":user_id,
             "tracks":tracks,
             "tracks_uris":tracks_uris,
+            #"banned_tracks_uris":banned_tracks_uris,
             "playlist_url":playlist_url,
             "last_update":last_update
         }
