@@ -48,6 +48,7 @@ i=1
 for p in all_playlists:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
+    print("\n",artist_name)
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
     live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
     
