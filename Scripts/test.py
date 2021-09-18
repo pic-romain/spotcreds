@@ -48,8 +48,7 @@ i=1
 for p in [all_playlists[0]]:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
-    spotify_api.get_playlist_track_uris(playlist_id)
-    print(spotify_api.get_playlist_track_uris(playlist_id))
+     print(spotify_api.get_playlist_track_uris(playlist_id).json())
     # next_page = 1
 
     # spotify_uris = []

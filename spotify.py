@@ -403,7 +403,7 @@ class SpotifyAPI(object):
     def get_playlist_track_uris(self,playlist_id):
         url = f"{SPOTIFY_API_URL}/playlists/{playlist_id}?fields=tracks.items(uri)"
         r = requests.get(url, headers=self.AUTH_HEADER)
-        print(r)
+        print(r.json())
         return r
 
 
