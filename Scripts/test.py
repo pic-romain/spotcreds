@@ -53,7 +53,7 @@ for p in all_playlists:
     
     for i in range(len(p["tracks_uris"])):
         if p["tracks_uris"][i] not in live_tracks:
-            print(p["tracks"][i]["name"], p["tracks_uris"][i])
+            print(p["tracks"][i]["title"], p["tracks_uris"][i])
     # removed_tracks = [t[0] for t in live_tracks if t[1] not in  ]
 
 
