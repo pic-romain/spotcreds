@@ -98,6 +98,14 @@ i=1
 for p in all_playlists:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
+    live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
+    live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
+    
+    removed_tracks_uris = []
+    for i in range(len(p["tracks_uris"])):
+        if p["tracks_uris"][i] not in live_tracks:
+            removed_tracks_uris.append(p["tracks_uris"][i])
+
     next_page = 1
 
     spotify_uris = []
@@ -137,6 +145,11 @@ for p in all_playlists:
     # Sort the playlist by decreasing popularity on Spotify
     spotify_uris = [uri for _,uri in sorted(zip(spotify_popularity,spotify_uris),reverse=True)]
     spotify_uris = unique(spotify_uris)
+
+    # Filter the tracks that were not manually removed
+    for uri in spotify_uris:
+        if uri in removed_tracks_uris:
+            spotify_uris.remove(uri)
 
     # Remove the previous tracks in the playlist
     tracks_to_delete = {"tracks": [{"uri":uri} for uri in p["tracks_uris"]]}
