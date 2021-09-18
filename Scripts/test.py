@@ -51,7 +51,7 @@ for p in [all_playlists[0]]:
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
     live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
     
-    for i in range(p["tracks_uris"]):
+    for i in range(len(p["tracks_uris"])):
         if p["tracks_uris"][i] not in live_tracks:
             print(p["tracks"][i]["name"], p["tracks_uris"][i])
     # removed_tracks = [t[0] for t in live_tracks if t[1] not in  ]
