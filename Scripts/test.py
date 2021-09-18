@@ -45,7 +45,7 @@ logger.info("Succesfully logged in the DB and to the Spotify account.")
 spotify_api.update_token()
 all_playlists = list(db.artist_playlist.find({}))
 i=1
-for p in [all_playlists[0]]:
+for p in all_playlists:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
