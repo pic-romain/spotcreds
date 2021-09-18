@@ -55,3 +55,8 @@ Spotify seems to be trying to develop more ressources for the artists behind son
 * Set up MongoDB on Linux server : [Code With Nate](https://www.youtube.com/watch?v=Ir68GVsNWB4)
 * Logs : [Corey Schafer](https://www.youtube.com/watch?v=jxmzY9soFXg)
 * For all the issues I encountered : [Stack Overflow](https://stackoverflow.com/)
+
+## License & Copyright
+(c) Romain Pic
+
+Licensed under the [GNU GPLv3](LICENSE)
