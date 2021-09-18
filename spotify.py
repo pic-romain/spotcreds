@@ -399,6 +399,12 @@ class SpotifyAPI(object):
 
         self.logger.info(f"Created and saved playlist for : {artist_name} at {playlist_url} ")
         return playlist_url
+    
+    def get_playlist_track_uris(self,playlist_id):
+        url = f"{SPOTIFY_API_URL}/playlists/{playlist_id}?fields=tracks.items(uri)"
+        r = requests.get(url, headers=self.AUTH_HEADER)
+        print(r)
+        return r
 
 
 
