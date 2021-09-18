@@ -49,7 +49,7 @@ for p in [all_playlists[0]]:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
-    live_tracks = [t["uri"] for t in live_playlist["tracks"]]
+    live_tracks = [t["uri"] for t in live_playlist["tracks"]["items"]]
     
     for i in range(p["tracks_uris"]):
         if p["tracks_uris"][i] not in live_tracks:
