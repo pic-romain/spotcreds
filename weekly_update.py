@@ -100,7 +100,7 @@ for p in all_playlists:
     artist_name = p["artist_name"]
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
     if "tracks" in live_playlist.keys():
-        live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]   
+        live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
     else :
         logger.warning("No item 'tracks' for :",live_playlist)
         if "banned_tracks_uris" in live_playlist.keys():
