@@ -1,5 +1,5 @@
 class ArtistPlaylist:
-    def __init__(self,artist_genius_id,artist_name,playlist_id,user_id,playlist_url,last_update,tracks=[],tracks_uris=[]):
+    def __init__(self,artist_genius_id,artist_name,playlist_id,user_id,playlist_url,last_update,tracks=[],tracks_uris=[],banned_tracks_uris=[]):
         self.data = {
             "artist_genius_id":artist_genius_id,
             "artist_name":artist_name,
@@ -7,6 +7,7 @@ class ArtistPlaylist:
             "user_id":user_id,
             "tracks":tracks,
             "tracks_uris":tracks_uris,
+            "banned_tracks_uris":banned_tracks_uris,
             "playlist_url":playlist_url,
             "last_update":last_update
         }

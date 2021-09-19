@@ -399,6 +399,12 @@ class SpotifyAPI(object):
 
         self.logger.info(f"Created and saved playlist for : {artist_name} at {playlist_url} ")
         return playlist_url
+    
+    def get_playlist_track_uris(self,playlist_id):
+        url = f"{SPOTIFY_API_URL}/playlists/{playlist_id}?fields=tracks.items(track(name,uri))"
+        r = requests.get(url, headers=self.AUTH_HEADER)
+        # print(r.json())
+        return r
 
 
 
@@ -456,6 +462,9 @@ def search_track(track_name,auth_header,artist_name=""):
     endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10})
     
     r = requests.get(endpoint, headers = auth_header)
+    if r.status_code not in range(200, 299):
+        return {}
+    
     if "tracks" in r.json().keys():
         if r.json()["tracks"]["items"]==[] and "(" in track_name:
             track_name = track_name.split("(")[0]
