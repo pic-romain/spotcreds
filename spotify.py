@@ -462,19 +462,16 @@ def search_track(track_name,auth_header,artist_name=""):
     endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10})
     
     r = requests.get(endpoint, headers = auth_header)
-    if 'json' in r.headers.get('Content-Type'):
-        js = r.json()
+    if r is None:
+        return {}
     else:
-        print('Response content is not in JSON format.')
-        print(r.text)
-
-    if "tracks" in r.json().keys():
-        if r.json()["tracks"]["items"]==[] and "(" in track_name:
-            track_name = track_name.split("(")[0]
-            query = {"track":track_name,"artist":artist_name}
-            query_url = " ".join([f"{k}:{v}" for k,v in query.items()])
-            endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10})
-            r = requests.get(endpoint, headers = auth_header)
+        if "tracks" in r.json().keys():
+            if r.json()["tracks"]["items"]==[] and "(" in track_name:
+                track_name = track_name.split("(")[0]
+                query = {"track":track_name,"artist":artist_name}
+                query_url = " ".join([f"{k}:{v}" for k,v in query.items()])
+                endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10})
+                r = requests.get(endpoint, headers = auth_header)
 
     if r.status_code not in range(200, 299):
         return {}
