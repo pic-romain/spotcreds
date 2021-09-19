@@ -94,7 +94,7 @@ logger.info("Finished updating all the popularities")
 #%%
 spotify_api.update_token()
 all_playlists = list(db.artist_playlist.find({}))
-i=1
+count=1
 for p in all_playlists:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
@@ -106,6 +106,7 @@ for p in all_playlists:
         if "banned_tracks_uris" in live_playlist.keys():
             live_tracks = [uri for uri in p["tracks_uris"] if uri not in p["banned_tracks_uris"]]
         else:
+            live_tracks = p["tracks_uris"]
             temp = db.artist_playlist.update_one(
                 filter={"_id":p["_id"]},
                 update={
@@ -213,7 +214,7 @@ for p in all_playlists:
             }
         )
     logger.info(f"Finished updating the playlist for {artist_name} - {i}/{len(all_playlists)}")
-    i+=1
+    count+=1
 
  
 # %%
