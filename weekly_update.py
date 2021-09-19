@@ -99,7 +99,10 @@ for p in all_playlists:
     playlist_id = p["playlist_id"]
     artist_name = p["artist_name"]
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
-    live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
+    if "tracks" in live_playlist.keys():
+        live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
+    else:
+        live_tracks = p["tracks_uris"]
     
     removed_tracks_uris = []
     for i in range(len(p["tracks_uris"])):
