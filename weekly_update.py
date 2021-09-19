@@ -100,9 +100,20 @@ for p in all_playlists:
     artist_name = p["artist_name"]
     live_playlist = spotify_api.get_playlist_track_uris(playlist_id).json()
     if "tracks" in live_playlist.keys():
-        live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]
-    else:
-        live_tracks = p["tracks_uris"]
+        live_tracks = [t["track"]["uri"] for t in live_playlist["tracks"]["items"]]   
+    else :
+        logger.warning("No item 'tracks' for :",live_playlist)
+        if "banned_tracks_uris" in live_playlist.keys():
+            live_tracks = [uri for uri in p["tracks_uris"] if uri not in p["banned_tracks_uris"]]
+        else:
+            temp = db.artist_playlist.update_one(
+                filter={"_id":p["_id"]},
+                update={
+                    "$set": {
+                        "banned_tracks_uris":[]
+                    }
+                }
+            )
     
     removed_tracks_uris = []
     for i in range(len(p["tracks_uris"])):
@@ -196,6 +207,7 @@ for p in all_playlists:
                 "$set": {
                     "tracks":full_tracklist,
                     "tracks_uris":spotify_uris,
+                    "banned_tracks_uris":removed_tracks_uris,
                     "last_update": datetime.datetime.utcnow()
                 }
             }
