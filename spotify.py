@@ -194,7 +194,7 @@ class SpotifyAPI(object):
         # Selenium Firefox
         opts = webdriver.FirefoxOptions()
         opts.add_argument("--headless")
-        driver = webdriver.Firefox(options=opts)
+        driver = webdriver.Firefox(executable_path="/usr/local/bin/geckodriver",options=opts)
         
         driver.get("https://accounts.spotify.com/404")
         load_cookie(driver=driver,path="data/cookies.txt")
