@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
         m = re.search(r"playlist\s\S*\s(.*)\s(stp|please|pls)",t.full_text)
         if bool(m) and t.user.screen_name!="SpotCredits":
-            logger.info("Treating the tweet : ")
+            logger.info(f"Treating the tweet :\n{t.full_text}")
             related_tweets = []
             query = m.group(1)
             artistsRequested.append(query)
