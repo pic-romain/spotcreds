@@ -57,6 +57,6 @@ Spotify seems to be trying to develop more ressources for the artists behind son
 * For all the issues I encountered : [Stack Overflow](https://stackoverflow.com/)
 
 ## License & Copyright
-© Romain Pic
+© Romain Pic - 2021
 
 Licensed under the [GNU GPLv3](LICENSE)
