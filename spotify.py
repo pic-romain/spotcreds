@@ -450,11 +450,11 @@ def search_track(track_name,auth_header,artist_name=""):
     # Filter Booska-P fresstyles
     if track_name == 'Booska 1H*':
         track_name = "Booska"
-    elif "’" in track_name:
-        track_name = track_name.replace("’","'")
+    # elif "’" in track_name:
+    #     track_name = track_name.replace("’","'")
     
-    if "’" in artist_name:
-        artist_name = artist_name.replace("’","'")
+    # if "’" in artist_name:
+    #     artist_name = artist_name.replace("’","'")
     
 
     query = {"track":track_name,"artist":artist_name}
