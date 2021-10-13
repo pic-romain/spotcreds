@@ -4,7 +4,7 @@ from PIL import ImageFont, ImageDraw, Image
 import cv2
 import numpy as np  
 
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 import datetime
 import re
 import unidecode
@@ -459,7 +459,7 @@ def search_track(track_name,auth_header,artist_name=""):
 
     query = {"track":track_name,"artist":artist_name}
     query_url = " ".join([f"{k}:{v}" for k,v in query.items()])
-    endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10})
+    endpoint = f"{SPOTIFY_API_URL}/search"+"?"+urlencode({"q":query_url,"type":"track","limit":10},urlencode({"q":query_url,"type":"track"},quote_via=quote))
     
     r = requests.get(endpoint, headers = auth_header)
     if r.status_code not in range(200, 299):

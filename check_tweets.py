@@ -54,6 +54,9 @@ if __name__ == "__main__":
             query = m.group(1)
             artistsRequested.append(query)
             res = genius.search_artist(query=query,logger=logger)
+            if res=={} and "'" in query:
+                query = query.replace("'","’")
+                res = genius.search_artist(query=query,logger=logger)
             if len(res)==0:
                 unknown_tweet = twitter_api.update_status("@"+t.user.screen_name + f" Les gars et moi, on a rien trouvé. Alors soit c'est toi qui a merdé, soit c'est nous qui sommes pas assez doué encore... Si tu penses que ça vient de nous, tu peux informer notre chef @pic_romain.",t.id)
                 unknown_artist = UnknownArtists(
