@@ -194,7 +194,7 @@ class SpotifyAPI(object):
         # Selenium Firefox
         opts = webdriver.FirefoxOptions()
         opts.add_argument("--headless")
-        driver = webdriver.Firefox(options=opts)
+        driver = webdriver.Firefox(executable_path="/usr/local/bin/geckodriver",options=opts)
         
         driver.get("https://accounts.spotify.com/404")
         load_cookie(driver=driver,path="data/cookies.txt")
@@ -450,11 +450,11 @@ def search_track(track_name,auth_header,artist_name=""):
     # Filter Booska-P fresstyles
     if track_name == 'Booska 1H*':
         track_name = "Booska"
-    elif "’" in track_name:
-        track_name = track_name.replace("’","'")
+    # elif "’" in track_name:
+    #     track_name = track_name.replace("’","'")
     
-    if "’" in artist_name:
-        artist_name = artist_name.replace("’","'")
+    # if "’" in artist_name:
+    #     artist_name = artist_name.replace("’","'")
     
 
     query = {"track":track_name,"artist":artist_name}

@@ -27,7 +27,7 @@ logger.addHandler(file_handler)
 if __name__ == "__main__":
     
     artist_input = input("Artist to add :")
-    artists_toadd = [artist_input]
+    artists_toadd = artist_input.split(",")
     # Connecting to the db
     db_name = "dbspotcred"
     # Set client

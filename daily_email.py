@@ -20,7 +20,7 @@ if __name__=="__main__":
     error_email = ERROR_EMAIL()
     
     todays_requests = []
-    log_name = date.today.strftime("%Y-%m-%d")
+    log_name = date.today().strftime("%Y-%m-%d")
     log_path = f"/home/spotcreds/logs/check_tweets/{log_name}.log"
     if os.path.isfile(log_path):
         f = open(log_path, "r")
